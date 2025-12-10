@@ -1,6 +1,8 @@
 # Video
 
-You can watch the video showcasing the project [here](https://youtu.be/iBGr6hU_tPM).
+You can watch the video showcasing the project in the following links:
+- [Version 1](https://youtu.be/iBGr6hU_tPM). Also available on branch _version1_;
+- Version 2: soon
 
 # How to Run the Project
 
