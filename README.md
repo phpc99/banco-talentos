@@ -47,5 +47,5 @@ You should now see `(venv)` at the start of your terminal prompt.
 Go to: http://127.0.0.1:8000/
 
 'Gestor' role credentials:
-user: gestor
-password: 1234
+- user: _gestor_
+- password: _1234_
