@@ -32,7 +32,7 @@ You should now see `(venv)` at the start of your terminal prompt.
 
 ## 5. **Change the directory**
 
-`cd core`
+`cd banco_talentos`
 
 ## 6. **Apply migrations**
 
