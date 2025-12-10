@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}Home{% endblock %}</title>
+
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/styles.css' %}"> 
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    </head>
+
+    <body class="home-body">
+        <div class="home-wrapper">
+            <header class="home-header">
+                <h1 class="home-title">Banco de Talentos Auditoria</h1>
+                <p class="home-subtitle">
+                    Bem-vindo! Escolha uma das opções abaixo para continuar.
+                </p>
+            </header>
+
+            <main class="home-main">
+                <a href="{% url 'cadastrar' %}" class="home-card home-card--primary">
+                    <h2 class="home-card__title">Quero me cadastrar</h2>
+                    <p class="home-card__text">
+                        Preencha seus dados, envie currículo e participe do nosso banco de talentos.
+                    </p>
+                </a>
+
+                <a href="{% url 'gestor-login' %}" class="home-card home-card--secondary">
+                    <h2 class="home-card__title">Sou gestor</h2>
+                    <p class="home-card__text">
+                        Acesse o painel para visualizar, filtrar e gerenciar as candidaturas.
+                    </p>
+                </a>
+            </main>
+
+            <footer class="home-footer">
+                <small>Banco de Talentos Auditoria</small>
+            </footer>
+        </div>
+    </body>
+
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}Confirmar exclusão{% endblock %}</title>
+
+        {% load static %}
+        <link rel="stylesheet" href="{% static 'css/styles.css' %}"> 
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    </head>
+
+    <body class="confirm-body">
+        <div class="confirm-wrapper">
+            <header class="confirm-header">
+                <div class="confirm-icone">!</div>
+                <h1 class="confirm-title">Confirmar exclusão</h1>
+                <p class="confirm-subtitle">
+                    Tem certeza de que deseja excluir a candidatura de
+                    <strong>{{ candidato.nome }}</strong> (ID {{ candidato.id }})?
+                </p>
+                <p class="confirm-warning">
+                    Esta ação é irreversível e removerá o registro do banco de dados.
+                </p>
+            </header>
+
+            <div class="confirm-actions">
+                <form method="post" class="confirm-form">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-danger">
+                        Sim, excluir candidatura
+                    </button>
+                </form>
+
+                <a href="{% url 'gestor-dashboard' %}" class="btn-secondary-link">
+                    Cancelar e voltar ao painel
+                </a>
+            </div>
+        </div>
+    </body>
+
+</html>
