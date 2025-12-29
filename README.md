@@ -52,7 +52,7 @@ Go to: http://127.0.0.1:8000/
 - user: _gestor_
 - password: _1234_
 
-# Features _EN_ of version 2
+# _EN_ Features of version 2
 
 ## Candidates
 
@@ -104,7 +104,7 @@ UI / UX
 - Protected administrative area for managers
 - Clear separation between public (candidate) and internal (manager) workflows
 
-# Features _PT_ da versão 2
+# _PT_ Features da versão 2
 
 ## Candidatos
 
