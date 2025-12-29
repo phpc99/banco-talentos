@@ -115,7 +115,7 @@ Go to: http://127.0.0.1:8000/
   <img src="screenshots/4-entrevista_detalhe.png" width="90%">
 </p>
 
-<p align="center"><em></em>List of candidates selected for interview and Interview page</p>
+<p align="center"><em>List of candidates selected for interview and Interview page</em></p>
 
 ## Institutional Pages
 
@@ -198,7 +198,7 @@ Go to: http://127.0.0.1:8000/
   <img src="screenshots/4-entrevista_detalhe.png" width="90%">
 </p>
 
-<p align="center"><em></em>Lista de candidatos selecionados para entrevista e Página de entrevista</p>
+<p align="center"><em>Lista de candidatos selecionados para entrevista e Página de entrevista</em></p>
 
 ## Páginas Institucionais
 
