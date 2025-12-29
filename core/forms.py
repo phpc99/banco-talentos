@@ -6,6 +6,7 @@ class CandidatoForm(forms.ModelForm):
         model = Candidato
         fields = [
             'nome',
+            'email',
             'estado',
             'cidade',
             'formacao',

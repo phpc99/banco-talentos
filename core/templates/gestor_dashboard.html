@@ -1,374 +1,323 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+{% extends "base.html" %}
+{% load static %}
 
+{% block title %}Painel do Gestor{% endblock %}
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{% block title %}Painel do Gestor{% endblock %}</title>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/gestor_dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'css/alerta.css' %}">
+{% endblock %}
 
-        {% load static %}
-        <link rel="stylesheet" href="{% static 'css/styles.css' %}"> 
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-    </head>
+{% block content %}
 
+<div class="dashboard-body">
 
-    <script>
-        // Espera a página carregar
-        document.addEventListener('DOMContentLoaded', function () {
-            const container = document.getElementById('mensagens-container');
-            if (!container) {
-                return; // nenhuma mensagem pra esconder
-            }
+    <div class="dashboard-wrapper">
 
-            // Aplica uma leve transição visual
-            container.style.transition = "opacity 0.5s ease";
+        <header class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">Painel do Gestor</h1>
+                <p class="dashboard-subtitle">
+                    Visualize, filtre e gerencie as candidaturas cadastradas.
+                </p>
+            </div>
 
-            // Espera 1 segundo e começa a sumir
-            setTimeout(function () {
-                container.style.opacity = "0";
+            <div class="dashboard-actions">
+                <a href="{% url 'entrevistas-lista' %}" class="btn-primary">
+                    Ir para Entrevistas
+                </a>
+            </div>
+        </header>
 
-                // Depois de 0.5s (tempo da transição), remove do DOM
-                setTimeout(function () {
-                    if (container && container.parentNode) {
-                        container.parentNode.removeChild(container);
-                    }
-                }, 500);
-            }, 1000); // 1000 ms = 1 segundo
-        });
-    </script>
+        <!-- Mensagem de sucesso -->
+        {% if messages %}
+            <div id="mensagens-container" class="alert-sucesso alert-floating">
+                {% for message in messages %}
+                    <img
+                        src="{% static 'img/checked.png' %}"
+                        alt="Sucesso"
+                        class="icone-sucesso"
+                    />
+                    <span>{{ message }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
 
+        <!-- FILTROS -->
+        <section class="card filters-card">
+            <h2 class="card-title">Filtros</h2>
 
-    <body class="dashboard-body">
+            <form method="get" class="filters-form">
+                <div class="filters-row">
 
-        <div class="dashboard-wrapper">
+                    <div class="form-group">
+                        <label for="filtro_estado">Estado</label>
+                        <select id="filtro_estado" name="estado">
+                            <option value="">Todos</option>
+                            {% for sigla, nome in opcoes_estados %}
+                                <option value="{{ sigla }}" {% if sigla == estado_selecionado %}selected{% endif %}>
+                                    {{ nome }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
 
-            <header class="dashboard-header">
+                    <div class="form-group">
+                        <label for="filtro_formacao">Formação</label>
+                        <select id="filtro_formacao" name="formacao">
+                            <option value="">Todas</option>
+                            {% for codigo, rotulo in opcoes_formacoes %}
+                                <option value="{{ codigo }}" {% if codigo == formacao_selecionada %}selected{% endif %}>
+                                    {{ rotulo }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="filtro_area">Área</label>
+                        <select id="filtro_area" name="area">
+                            <option value="">Todas</option>
+                            {% for codigo, rotulo in opcoes_areas %}
+                                <option value="{{ codigo }}" {% if codigo == area_selecionada %}selected{% endif %}>
+                                    {{ rotulo }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="filters-actions">
+                    <button type="submit" class="btn-primary">Aplicar filtros</button>
+                    <a href="{% url 'gestor-dashboard' %}" class="btn-link" style="margin-top: 8px;">Limpar filtros</a>
+                </div>
+            </form>
+        </section>
+
+        <!-- TABELA -->
+        <section class="card table-card">
+
+            <div class="table-header-row">
                 <div>
-                    <h1 class="dashboard-title">Painel do Gestor</h1>
-                    <p class="dashboard-subtitle">
-                        Visualize, filtre e gerencie as candidaturas cadastradas.
+                    <h2 class="card-title">Lista de candidatos</h2>
+                    <p class="card-subtitle">
+                        Foram encontradas <strong>{{ total_candidatos_filtrados }}</strong> candidaturas.
                     </p>
                 </div>
-            </header>
+            </div>
 
-            <!-- Mensagem de sucesso após salvas anotação -->
-            {% if messages %}
-                <div id="mensagens-container" class="alert-sucesso">
-                    {% for message in messages %}
-                        <span class="icone-sucesso">✔</span>
-                        <span>{{ message }}</span>
-                    {% endfor %}
-                </div>
-            {% endif %}
+            {% if candidatos %}
+                <div class="table-wrapper">
+                    <table class="data-table">
 
-            <!-- Filtragem por área, formação e estado-->
-            <section class="card filters-card">
-                <h2 class="card-title">Filtros</h2>
-                <form method="get" class="filters-form">
-                    <div class="filters-row">
-                        <div class="form-group">
-                            <label for="filtro_estado">Estado</label>
-                            <select id="filtro_estado" name="estado">
-                                <option value="">Todos</option>
-                                {% for sigla, nome in opcoes_estados %}
-                                    <option value="{{ sigla }}" {% if sigla == estado_selecionado %}selected{% endif %}>
-                                        {{ nome }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Status</th>
+                                <th>Email</th>
+                                <th>Estado</th>
+                                <th>Cidade</th>
+                                <th>Formação</th>
+                                <th>Área</th>
+                                <th>Currículo</th>
+                                <th>Foto</th>
+                                <th>Ações</th>
+                                <th>Anotações</th>
+                            </tr>
+                        </thead>
 
-                        <div class="form-group">
-                            <label for="filtro_formacao">Formação</label>
-                            <select id="filtro_formacao" name="formacao">
-                                <option value="">Todas</option>
-                                {% for codigo, rotulo in opcoes_formacoes %}
-                                    <option value="{{ codigo }}" {% if codigo == formacao_selecionada %}selected{% endif %}>
-                                        {{ rotulo }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="filtro_area">Área</label>
-                            <select id="filtro_area" name="area">
-                                <option value="">Todas</option>
-                                {% for codigo, rotulo in opcoes_areas %}
-                                    <option value="{{ codigo }}" {% if codigo == area_selecionada %}selected{% endif %}>
-                                        {{ rotulo }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="filters-actions">
-                        <button type="submit" class="btn-primary">Aplicar filtros</button>
-                        <a href="{% url 'gestor-dashboard' %}" class="btn-link">Limpar filtros</a>
-                    </div>
-                </form>
-            </section>
-
-            <!-- Listagem de candidatos em tabela -->
-            <section class="card table-card">
-                <div class="table-header-row">
-                    <div>
-                        <h2 class="card-title">Lista de candidatos</h2>
-                        <p class="card-subtitle">
-                            Foram encontradas <strong>{{ total_candidatos_filtrados }}</strong> candidaturas.
-                        </p>
-                    </div>
-                </div>
-
-                {% if candidatos %}
-                    <div class="table-wrapper">
-                        <table class="data-table">
-
-                            <thead>
+                        <tbody>
+                            {% for candidato in candidatos %}
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Nome</th>
-                                    <th>Estado</th>
-                                    <th>Cidade</th>
-                                    <th>Formação</th>
-                                    <th>Área</th>
-                                    <th>Currículo</th>
-                                    <th>Foto</th>
-                                    <th>Ações</th>
-                                    <th>Anotações</th>
-                                </tr>
-                            </thead>
+                                    <td>{{ candidato.id }}</td>
+                                    <td>{{ candidato.nome }}</td>
 
-                            <tbody>
-                                {% for candidato in candidatos %}
-                                    <tr>
-                                        <td>{{ candidato.id }}</td>
-                                        <td>{{ candidato.nome }}</td>
-                                        <td>{{ candidato.estado }}</td>
-                                        <td>{{ candidato.cidade }}</td>
-                                        <td>{{ candidato.get_formacao_display }}</td>
-                                        <td>{{ candidato.get_area_display }}</td>
-                                        <td>
-                                            {% if candidato.curriculo %}
-                                                <a href="{{ candidato.curriculo.url }}" target="_blank" class="link-table">Ver currículo</a>
-                                            {% else %}
-                                                <span class="badge badge-muted">Não enviado</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            {% if candidato.foto %}
-                                                <!-- escolher entre as duas opçoes: link ou !foto! -->
-                                                <!--<a href="{{ candidato.foto.url }}" target="_blank" class="link-table">Ver foto</a>-->
-                                                <img src="{{ candidato.foto.url }}" width="60" height="60">
-                                            {% else %}
-                                                <span class="badge badge-muted">Não enviada</span>
-                                            {% endif %}
-                                        </td>
-                                        <td>
-                                            <a href="{% url 'excluir-candidato' candidato.id %}" class="btn-link-danger">Excluir</a>
-                                        </td>
-                                        <td>
-                                            <form method="post" action="{% url 'atualizar-anotacoes' candidato.id %}">
+                                    <td>
+                                        <form method="post" action="{% url 'atualizar-status' candidato.id %}">
+                                            {% csrf_token %}
+
+                                            <input type="hidden" name="page" value="{{ page_obj.number }}">
+                                            <input type="hidden" name="estado" value="{{ estado_selecionado }}">
+                                            <input type="hidden" name="formacao" value="{{ formacao_selecionada }}">
+                                            <input type="hidden" name="area" value="{{ area_selecionada }}">
+
+                                            <select name="status">
+                                                {% for code, label in candidato.STATUS_CHOICES %}
+                                                    <option value="{{ code }}" {% if candidato.status == code %}selected{% endif %}>
+                                                        {{ label }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+
+                                            <button type="submit" class="btn-secondary">Salvar</button>
+                                        </form>
+                                    </td>
+
+                                    <td>{{ candidato.email }}</td>
+                                    <td>{{ candidato.estado }}</td>
+                                    <td>{{ candidato.cidade }}</td>
+                                    <td>{{ candidato.get_formacao_display }}</td>
+                                    <td>{{ candidato.get_area_display }}</td>
+
+                                    <td>
+                                        {% if candidato.curriculo %}
+                                            <a href="{{ candidato.curriculo.url }}" target="_blank" class="link-table">
+                                                Ver currículo
+                                            </a>
+                                        {% else %}
+                                            <span class="badge badge-muted">Não enviado</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        {% if candidato.foto %}
+                                            <img src="{{ candidato.foto.url }}" width="60" height="60">
+                                        {% else %}
+                                            <span class="badge badge-muted">Não enviada</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <td>
+                                        <button
+                                            type="button"
+                                            class="btn-link-danger"
+                                            onclick="abrirModalExcluir('{{ candidato.id }}', '{{ candidato.nome }}')"
+                                        >
+                                            Excluir
+                                        </button>
+                                    </td>
+
+                                    <!-- MODAL DE CONFIRMAÇÃO DE EXCLUSÃO -->
+                                    <div id="modal-excluir" class="modal-overlay hidden">
+
+                                        <div class="modal-box">
+                                            <h2 class="modal-title">Confirmar exclusão</h2>
+
+                                            <p class="modal-text" id="modal-texto">
+                                                <!-- texto preenchido via JS -->
+                                            </p>
+
+                                            <form method="post" id="form-excluir">
                                                 {% csrf_token %}
-                                                <textarea name="anotacoes" rows="3" class="textarea-anotacoes">{{ candidato.anotacoes|default_if_none:"" }}</textarea>
-                                                <button type="submit" class="btn-secondary">Salvar</button>
+                                                <div class="modal-actions">
+                                                    <button type="submit" class="btn-link-danger">
+                                                        Sim, excluir
+                                                    </button>
+
+                                                    <button type="button" class="btn-secondary" onclick="fecharModalExcluir()">
+                                                        Cancelar
+                                                    </button>
+                                                </div>
                                             </form>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                                        </div>
+
+                                    </div>
+
+                                    <td>
+                                        <form method="post" action="{% url 'atualizar-anotacoes' candidato.id %}">
+                                        {% csrf_token %}
+
+                                        <input type="hidden" name="page" value="{{ page_obj.number }}">
+                                        <input type="hidden" name="estado" value="{{ estado_selecionado }}">
+                                        <input type="hidden" name="formacao" value="{{ formacao_selecionada }}">
+                                        <input type="hidden" name="area" value="{{ area_selecionada }}">
+
+                                        <textarea name="anotacoes" rows="3" class="textarea-anotacoes">{{ candidato.anotacoes|default_if_none:"" }}</textarea>
+                                        <button type="submit" class="btn-secondary">Salvar</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+                </div>
+
+                <!-- PAGINATOR -->
+                {% if candidatos.has_other_pages %}
+                    <div class="pagination">
+                        {% if candidatos.has_previous %}
+                            <a class="pagination-link" href="?page={{ candidatos.previous_page_number }}">← Anterior</a>
+                        {% endif %}
+
+                        <span class="pagination-info">
+                            Página {{ candidatos.number }} de {{ candidatos.paginator.num_pages }}
+                        </span>
+
+                        {% if candidatos.has_next %}
+                            <a class="pagination-link" href="?page={{ candidatos.next_page_number }}">Próxima →</a>
+                        {% endif %}
                     </div>
-
-                    <!-- Paginator, 10 registros por pag -->
-                    {% if candidatos.has_other_pages %}
-                        <div class="pagination">
-                            {% if candidatos.has_previous %}
-                                <a
-                                    class="pagination-link"
-                                    href="?page={{ candidatos.previous_page_number }}{% if estado_selecionado %}&estado={{ estado_selecionado }}{% endif %}{% if formacao_selecionada %}&formacao={{ formacao_selecionada }}{% endif %}{% if area_selecionada %}&area={{ area_selecionada }}{% endif %}"
-                                >
-                                    ← Anterior
-                                </a>
-                            {% endif %}
-
-                            <span class="pagination-info">
-                                Página {{ candidatos.number }} de {{ candidatos.paginator.num_pages }}
-                            </span>
-
-                            {% if candidatos.has_next %}
-                                <a
-                                    class="pagination-link"
-                                    href="?page={{ candidatos.next_page_number }}{% if estado_selecionado %}&estado={{ estado_selecionado }}{% endif %}{% if formacao_selecionada %}&formacao={{ formacao_selecionada }}{% endif %}{% if area_selecionada %}&area={{ area_selecionada }}{% endif %}"
-                                >
-                                    Próxima →
-                                </a>
-                            {% endif %}
-                        </div>
-                    {% endif %}
-                {% else %}
-                    <p class="sem-resultados">Não há candidatos cadastrados com os filtros selecionados.</p>
                 {% endif %}
-            </section>
 
-            <!-- Visualização por gráficos -->
-            <section class="charts-section">
-                <h2 class="card-title">Gráficos (com base nos filtros atuais)</h2>
-                <p class="card-subtitle">
-                    Os gráficos abaixo consideram apenas os candidatos exibidos nos resultados filtrados.
+            {% else %}
+                <p class="sem-resultados">
+                    Não há candidatos cadastrados com os filtros selecionados.
                 </p>
+            {% endif %}
+        </section>
 
-                <div class="charts-grid">
+        <!-- DADOS DOS GRÁFICOS -->
+        {{ chart_area|json_script:"chart-area-data" }}
+        {{ chart_formacao|json_script:"chart-formacao-data" }}
+        {{ chart_estado|json_script:"chart-estado-data" }}
 
-                    <!-- Gráfico por área -->
-                    <div class="chart-card">
-                        <div class="chart-header">
-                            <h3>Candidatos por área</h3>
-                            <div class="chart-toggle">
-                                <button type="button" class="btn-chip" onclick="mudarTipo('area', 'bar')">Barras</button>
-                                <button type="button" class="btn-chip" onclick="mudarTipo('area', 'pie')">Pizza</button>
-                            </div>
+        <section class="charts-section">
+            <h2 class="card-title">Gráficos (com base nos filtros atuais)</h2>
+
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Candidatos por área</h3>
+                        <div class="chart-toggle">
+                            <button class="btn-chip" onclick="mudarTipo('area','bar')">Barras</button>
+                            <button class="btn-chip" onclick="mudarTipo('area','pie')">Pizza</button>
                         </div>
-                        <canvas id="graficoArea" width="400" height="200"></canvas>
                     </div>
 
-                    <!-- Gráfico por formação -->
-                    <div class="chart-card">
-                        <div class="chart-header">
-                            <h3>Candidatos por formação</h3>
-                            <div class="chart-toggle">
-                                <button type="button" class="btn-chip" onclick="mudarTipo('formacao', 'bar')">Barras</button>
-                                <button type="button" class="btn-chip" onclick="mudarTipo('formacao', 'pie')">Pizza</button>
-                            </div>
-                        </div>
-                        <canvas id="graficoFormacao" width="400" height="200"></canvas>
-                    </div>
-
-                    <!-- Gráfico por estado -->
-                    <div class="chart-card">
-                        <div class="chart-header">
-                            <h3>Candidatos por estado</h3>
-                            <div class="chart-toggle">
-                                <button type="button" class="btn-chip" onclick="mudarTipo('estado', 'bar')">Barras</button>
-                                <button type="button" class="btn-chip" onclick="mudarTipo('estado', 'pie')">Pizza</button>
-                            </div>
-                        </div>
-                        <canvas id="graficoEstado" width="400" height="200"></canvas>
+                    <div class="chart-body">
+                        <canvas id="graficoArea"></canvas>
                     </div>
                 </div>
 
-            </section>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Candidatos por formação</h3>
+                        <div class="chart-toggle">
+                            <button class="btn-chip" onclick="mudarTipo('formacao','bar')">Barras</button>
+                            <button class="btn-chip" onclick="mudarTipo('formacao','pie')">Pizza</button>
+                        </div>
+                    </div>
 
-            <!-- Link de retorno no footer -->
-            <footer class="dashboard-footer">
-                <a href="{% url 'home' %}" class="voltar-home">← Voltar para a página inicial</a>
-            </footer>
+                    <div class="chart-body">
+                        <canvas id="graficoFormacao"></canvas>
+                    </div>
+                </div>
 
-        </div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3>Candidatos por estado</h3>
+                        <div class="chart-toggle">
+                            <button class="btn-chip" onclick="mudarTipo('estado','bar')">Barras</button>
+                            <button class="btn-chip" onclick="mudarTipo('estado','pie')">Pizza</button>
+                        </div>
+                    </div>
 
-        <!-- Chart.js via CDN -->
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                    <div class="chart-body">
+                        <canvas id="graficoEstado"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        <!-- Dados e gráficos -->
-        <script>
-            // Dados vindos da view (JSON)
-            const chartArea = JSON.parse('{{ chart_area_json|escapejs }}');
-            const chartFormacao = JSON.parse('{{ chart_formacao_json|escapejs }}');
-            const chartEstado = JSON.parse('{{ chart_estado_json|escapejs }}');
+    </div>
+</div>
 
-            // Função genérica para criar gráficos com barra/pizza
-            function criarGrafico(idCanvas, dados, tipo, label) {
-                const ctx = document.getElementById(idCanvas).getContext('2d');
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{% static 'js/graficos.js' %}"></script>
+<script src="{% static 'js/alerta.js' %}"></script>
+<script src="{% static 'js/modal_excluir.js' %}"></script>
 
-                const config = {
-                    type: tipo,
-                    data: {
-                        labels: dados.labels,
-                        datasets: [{
-                            label: label,
-                            data: dados.values,
-                        }]
-                    },
-                    options: {}
-                };
-
-                if (tipo === 'bar') {
-                    config.options = {
-                        responsive: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: {
-                                    stepSize: 1,    // step no y de 1 em 1
-                                    precision: 0    // sem casas decimais
-                                }
-                            }
-                        }
-                    };
-                } else {
-                    config.options = {
-                        responsive: false
-                    };
-                }
-
-                return new Chart(ctx, config);
-            }
-
-            // Criação inicial dos gráficos
-            // Todos iniciam como gráficos de barra
-            let chartAreaObj = criarGrafico(
-                'graficoArea',
-                chartArea,
-                'bar',
-                'Quantidade de candidatos por área'
-            );
-
-            let chartFormacaoObj = criarGrafico(
-                'graficoFormacao',
-                chartFormacao,
-                'bar',
-                'Quantidade de candidatos por formação'
-            );
-
-            let chartEstadoObj = criarGrafico(
-                'graficoEstado',
-                chartEstado,
-                'bar',
-                'Distribuição de candidatos por estado'
-            );
-
-            // Função para mudar o tipo de cada gráfico
-            function mudarTipo(grafico, tipo) {
-                if (grafico === 'area') {
-                    chartAreaObj.destroy();
-                    chartAreaObj = criarGrafico(
-                        'graficoArea',
-                        chartArea,
-                        tipo,
-                        'Quantidade de candidatos por área'
-                    );
-                } else if (grafico === 'formacao') {
-                    chartFormacaoObj.destroy();
-                    chartFormacaoObj = criarGrafico(
-                        'graficoFormacao',
-                        chartFormacao,
-                        tipo,
-                        'Quantidade de candidatos por formação'
-                    );
-                } else if (grafico === 'estado') {
-                    chartEstadoObj.destroy();
-                    chartEstadoObj = criarGrafico(
-                        'graficoEstado',
-                        chartEstado,
-                        tipo,
-                        'Distribuição de candidatos por estado'
-                    );
-                }
-            }
-        </script>
-    </body>
-</html>
+{% endblock %}

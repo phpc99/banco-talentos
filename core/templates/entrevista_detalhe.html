@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Entrevista{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/gestor_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- CSS INLINE aqui - remover para beleza do código -->
+
+<div class="dashboard-body">
+    <div class="dashboard-wrapper">
+
+        <header class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">Entrevista</h1>
+                <p class="dashboard-subtitle">
+                    Avaliação do candidato selecionado.
+                </p>
+            </div>
+        </header>
+
+        <!-- DADOS DO CANDIDATO -->
+        <section class="card">
+            <h2 class="card-title">Dados do candidato</h2>
+
+            <div class="card-subtitle" style="margin-top: 8px;">
+                <p><strong>Nome:</strong> {{ candidato.nome }}</p>
+                <p><strong>Email:</strong> {{ candidato.email }}</p>
+                <p>
+                    <strong>Estado:</strong> {{ candidato.estado }} |
+                    <strong>Cidade:</strong> {{ candidato.cidade }}
+                </p>
+                <p><strong>Formação:</strong> {{ candidato.get_formacao_display }}</p>
+                <p><strong>Área pretendida:</strong> {{ candidato.get_area_display }}</p>
+            </div>
+        </section>
+
+        <!-- QUESTIONÁRIO -->
+        <section class="card">
+            <h2 class="card-title">Questionário</h2>
+
+            <form method="post" style="margin-top: 12px;">
+                {% csrf_token %}
+
+                <!-- PARTE COMUM -->
+                <h3 style="margin-top: 10px;">Parte comum</h3>
+
+                <div class="table-wrapper" style="margin-top: 10px;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Pergunta</th>
+                                <th>Avaliação</th>
+                                <th>Observações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in comum_itens %}
+                                <tr>
+                                    <td>{{ item.pergunta }}</td>
+                                    <td>
+                                        <select name="comum_nota_{{ forloop.counter0 }}" required>
+                                            <option value="">Selecione</option>
+                                            {% for code, label in opcoes_nota %}
+                                                <option value="{{ code }}" {% if item.nota == code %}selected{% endif %}>
+                                                    {{ label }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <textarea
+                                            name="comum_obs_{{ forloop.counter0 }}"
+                                            rows="2"
+                                            class="textarea-anotacoes"
+                                        >{{ item.observacao }}</textarea>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- PARTE ESPECÍFICA -->
+                <h3 style="margin-top: 18px;">
+                    Parte específica ({{ candidato.get_area_display }})
+                </h3>
+
+                {% if especifico_itens %}
+                    <div class="table-wrapper" style="margin-top: 10px;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Pergunta</th>
+                                    <th>Avaliação</th>
+                                    <th>Observações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in especifico_itens %}
+                                    <tr>
+                                        <td>{{ item.pergunta }}</td>
+                                        <td>
+                                            <select name="esp_nota_{{ forloop.counter0 }}" required>
+                                                <option value="">Selecione</option>
+                                                {% for code, label in opcoes_nota %}
+                                                    <option value="{{ code }}" {% if item.nota == code %}selected{% endif %}>
+                                                        {{ label }}
+                                                    </option>
+                                                {% endfor %}
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <textarea
+                                                name="esp_obs_{{ forloop.counter0 }}"
+                                                rows="2"
+                                                class="textarea-anotacoes"
+                                            >{{ item.observacao }}</textarea>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="sem-resultados" style="margin-top: 8px;">
+                        Não há perguntas específicas configuradas para esta área.
+                    </p>
+                {% endif %}
+
+                <hr style="margin: 18px 0;">
+
+                <!-- DECISÃO FINAL -->
+                <h3>Decisão final</h3>
+
+                <div class="form-group" style="margin-top: 10px;">
+                    <label for="id_decisao">Atualizar status do entrevistado</label>
+                    <select id="id_decisao" name="decisao" required>
+                        {% for code, label in decisoes %}
+                            <option value="{{ code }}" {% if avaliacao.decisao == code %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div style="margin-top: 14px; display: flex; gap: 12px; align-items: center;">
+                    <button type="submit" class="btn-primary">
+                        Salvar avaliação
+                    </button>
+
+                    <a href="{% url 'entrevistas-lista' %}" class="btn-link" style="margin-top: 8px;">
+                        Cancelar
+                    </a>
+                </div>
+            </form>
+        </section>
+
+        <footer class="dashboard-footer">
+            <a href="{% url 'gestor-dashboard' %}" class="voltar-home">
+                ← Voltar ao painel
+            </a>
+        </footer>
+
+    </div>
+</div>
+
+<script src="{% static 'js/alerta.js' %}"></script>
+
+{% endblock %}

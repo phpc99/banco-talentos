@@ -1,47 +1,133 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+{% extends "base.html" %}
+{% load static %}
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{% block title %}Home{% endblock %}</title>
+{% block title %}Home{% endblock %}
 
-        {% load static %}
-        <link rel="stylesheet" href="{% static 'css/styles.css' %}"> 
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-    </head>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
 
-    <body class="home-body">
-        <div class="home-wrapper">
-            <header class="home-header">
-                <h1 class="home-title">Banco de Talentos Auditoria</h1>
-                <p class="home-subtitle">
-                    Bem-vindo! Escolha uma das opções abaixo para continuar.
-                </p>
-            </header>
+{% block body_class %}home-page{% endblock %}
 
-            <main class="home-main">
-                <a href="{% url 'cadastrar' %}" class="home-card home-card--primary">
-                    <h2 class="home-card__title">Quero me cadastrar</h2>
-                    <p class="home-card__text">
-                        Preencha seus dados, envie currículo e participe do nosso banco de talentos.
-                    </p>
-                </a>
+{% block content %}
 
-                <a href="{% url 'gestor-login' %}" class="home-card home-card--secondary">
-                    <h2 class="home-card__title">Sou gestor</h2>
-                    <p class="home-card__text">
-                        Acesse o painel para visualizar, filtrar e gerenciar as candidaturas.
-                    </p>
-                </a>
-            </main>
+<!-- HERO COM IMAGEM + TEXTO + VÍDEO -->
+<section class="home-hero">
 
-            <footer class="home-footer">
-                <small>Banco de Talentos Auditoria</small>
-            </footer>
+    <!-- Overlay de conteúdo -->
+    <div class="home-hero-content">
+
+        <!-- Texto à esquerda -->
+        <div class="home-hero-text">
+            <h1>
+                Ajudando você a prosperar em um mundo em constante mudança
+            </h1>
         </div>
-    </body>
 
-</html>
+        <!-- Vídeo à direita -->
+         <!-- Ir no vídeo do YT -> clicar em COMPARTILHAR -> depois em INCORPORAR -> e só colar o código-->
+        <div class="home-hero-video">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/4wja_Jm8fGo?si=4NrjZK0scfFzMxQm" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+
+    </div>
+
+</section>
+
+<!-- CONTEÚDO ABAIXO DO HERO -->
+<section class="home-split">
+    <div class="home-split-wrapper">
+
+        <!-- ESQUERDA -->
+        <div class="home-split-card">
+            <img
+                src="{% static 'img/carreira.jpg' %}"
+                alt="Carreira na empresa"
+                class="home-split-img"
+            >
+            <a href="{% url 'carreira' %}" class="home-split-link">
+                Carreira na empresa
+            </a>
+        </div>
+
+        <!-- DIREITA -->
+        <div class="home-split-card">
+            <img
+                src="{% static 'img/junte_se.jpg' %}"
+                alt="Junte-se a nós"
+                class="home-split-img"
+            >
+            <a href="{% url 'cadastrar' %}" class="home-split-link">
+                Junte-se a nós
+            </a>
+        </div>
+
+    </div>
+</section>
+
+<!-- Link de consulta de status de candidatura -->
+<section class="home-status-link">
+    <a href="{% url 'consultar-status' %}" class="home-status-anchor">
+        <img
+            src="{% static 'img/loading.png' %}"
+            alt="Consultar status da candidatura"
+            class="home-status-icon"
+        >
+        Consultar status da candidatura
+    </a>
+</section>
+
+<!-- Setores - Carousels -->
+<section class="setores-section">
+    <div class="setores-header">
+        <h2 class="setores-title">Setores que atendemos</h2>
+
+        <div class="setores-controls">
+            <button type="button" class="btn-primary" id="setores-prev" aria-label="Anterior">
+                ‹
+            </button>
+            <button type="button" class="btn-primary" id="setores-next" aria-label="Próximo">
+                ›
+            </button>
+        </div>
+    </div>
+
+    <div class="setores-carousel" id="setores-carousel">
+        <!-- Energia -->
+        <article class="setor-card">
+            <img class="setor-img" src="{% static 'img/energia.jpg' %}" alt="Energia">
+            <div class="setor-overlay">
+                <span class="setor-label">Energia</span>
+            </div>
+        </article>
+
+        <!-- Finanças -->
+        <article class="setor-card">
+            <img class="setor-img" src="{% static 'img/financas.jpg' %}" alt="Finanças">
+            <div class="setor-overlay">
+                <span class="setor-label">Finanças</span>
+            </div>
+        </article>
+
+        <!-- Agricultura -->
+        <article class="setor-card">
+            <img class="setor-img" src="{% static 'img/agricultura.jpg' %}" alt="Agricultura">
+            <div class="setor-overlay">
+                <span class="setor-label">Agricultura</span>
+            </div>
+        </article>
+
+        <!-- Automotivo -->
+        <article class="setor-card">
+            <img class="setor-img" src="{% static 'img/automotivo.jpg' %}" alt="Automotivo">
+            <div class="setor-overlay">
+                <span class="setor-label">Automotivo</span>
+            </div>
+        </article>
+    </div>
+</section>
+
+<script src="{% static 'js/video_home.js' %}"></script>
+<script src="{% static 'js/carousel_setores.js' %}"></script>
+
+{% endblock %}

@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Carreira na empresa{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/carreira.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-body">
+    <div class="dashboard-wrapper">
+
+        <header class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">Carreira na empresa</h1>
+                <p class="dashboard-subtitle">
+                    Conheça as oportunidades disponíveis e cadastre-se para participar do Banco de Talentos.
+                </p>
+            </div>
+        </header>
+
+        <section class="card">
+            <h2 class="card-title">Carreiras disponíveis</h2>
+            <p class="card-subtitle">
+                As descrições abaixo são referenciais e podem variar conforme a necessidade da empresa.
+            </p>
+        </section>
+
+        <!-- Tabs selecionar carreira -->
+        <nav class="carreira-tabs" aria-label="Seleção de carreira">
+            <button type="button" class="carreira-tab is-active" data-target="cont1">CONTADOR I</button>
+            <button type="button" class="carreira-tab" data-target="cont2">CONTADOR II</button>
+            <button type="button" class="carreira-tab" data-target="cont3">CONTADOR III</button>
+            <button type="button" class="carreira-tab" data-target="aud1">AUDITOR I</button>
+            <button type="button" class="carreira-tab" data-target="aud2">AUDITOR II</button>
+            <button type="button" class="carreira-tab" data-target="aud3">AUDITOR III</button>
+        </nav>
+
+        <!-- ===================== CONTADOR I ===================== -->
+        <section class="card carreira-card is-active" data-role="cont1">
+            <h2 class="card-title">Contador I</h2>
+
+            <h3>Descrição do cargo</h3>
+            <p class="card-subtitle">
+                Atuação em rotinas contábeis básicas, apoio em conciliações e organização de documentos, com foco em
+                aprendizado e desenvolvimento técnico.
+            </p>
+
+            <h3>Responsabilidades e Atividades</h3>
+            <ul>
+                <li>Apoiar na conciliação de contas e lançamentos contábeis.</li>
+                <li>Organizar documentos e evidências contábeis.</li>
+                <li>Auxiliar na elaboração de relatórios simples e controles internos.</li>
+                <li>Apoiar o time em rotinas de fechamento (quando necessário).</li>
+            </ul>
+
+            <h3>Qualificações e Requisitos</h3>
+            <ul>
+                <li>Formação em Contabilidade (concluída ou em fase final), ou áreas correlatas.</li>
+                <li>Noções de contabilidade, conciliação e organização documental.</li>
+                <li>Boa comunicação, atenção a detalhes e comprometimento.</li>
+                <li>Conhecimentos básicos de Excel.</li>
+            </ul>
+        </section>
+
+        <!-- ===================== CONTADOR II ===================== -->
+        <section class="card carreira-card" data-role="cont2" hidden>
+            <h2 class="card-title">Contador II</h2>
+
+            <h3>Descrição do cargo</h3>
+            <p class="card-subtitle">
+                Atuação em rotinas contábeis intermediárias, conciliações complexas e suporte ao fechamento contábil,
+                com autonomia moderada.
+            </p>
+
+            <h3>Responsabilidades e Atividades</h3>
+            <ul>
+                <li>Executar conciliações contábeis e análises de variações.</li>
+                <li>Apoiar o fechamento contábil e elaboração de relatórios gerenciais.</li>
+                <li>Participar da apuração e acompanhamento de indicadores.</li>
+                <li>Garantir organização e consistência das informações contábeis.</li>
+            </ul>
+
+            <h3>Qualificações e Requisitos</h3>
+            <ul>
+                <li>Formação em Contabilidade ou áreas correlatas.</li>
+                <li>Experiência com rotinas contábeis e fechamento.</li>
+                <li>Conhecimento intermediário de Excel.</li>
+                <li>Perfil analítico, proatividade e senso de responsabilidade.</li>
+            </ul>
+        </section>
+
+        <!-- ===================== CONTADOR III ===================== -->
+        <section class="card carreira-card" data-role="cont3" hidden>
+            <h2 class="card-title">Contador III</h2>
+
+            <h3>Descrição do cargo</h3>
+            <p class="card-subtitle">
+                Atuação com alta autonomia em análises contábeis, suporte técnico, revisões e melhoria de processos,
+                podendo orientar profissionais menos experientes.
+            </p>
+
+            <h3>Responsabilidades e Atividades</h3>
+            <ul>
+                <li>Realizar análises técnicas e revisões contábeis complexas.</li>
+                <li>Conduzir e apoiar fechamentos contábeis com foco em qualidade.</li>
+                <li>Propor melhorias de processos e controles internos.</li>
+                <li>Orientar e apoiar o desenvolvimento de membros do time.</li>
+            </ul>
+
+            <h3>Qualificações e Requisitos</h3>
+            <ul>
+                <li>Formação em Contabilidade ou áreas correlatas.</li>
+                <li>Experiência sólida em rotinas contábeis e análises avançadas.</li>
+                <li>Capacidade de liderança técnica e visão de processo.</li>
+                <li>Conhecimento avançado de Excel; desejável experiência com ERPs.</li>
+            </ul>
+        </section>
+
+        <!-- ===================== AUDITOR I ===================== -->
+        <section class="card carreira-card" data-role="aud1" hidden>
+            <h2 class="card-title">Auditor I</h2>
+
+            <h3>Descrição do cargo</h3>
+            <p class="card-subtitle">
+                Apoio em atividades de auditoria, execução de testes básicos e organização de evidências, com foco em
+                aprendizado e formação técnica.
+            </p>
+
+            <h3>Responsabilidades e Atividades</h3>
+            <ul>
+                <li>Apoiar na coleta de evidências e organização de papéis de trabalho.</li>
+                <li>Executar testes básicos sob orientação do time.</li>
+                <li>Auxiliar no mapeamento de processos e controles.</li>
+                <li>Participar de reuniões e registrar informações relevantes.</li>
+            </ul>
+
+            <h3>Qualificações e Requisitos</h3>
+            <ul>
+                <li>Formação em Contabilidade, Administração, Economia ou áreas correlatas.</li>
+                <li>Noções de auditoria, controles internos e processos.</li>
+                <li>Boa organização, atenção a detalhes e postura profissional.</li>
+                <li>Conhecimentos básicos de Excel.</li>
+            </ul>
+        </section>
+
+        <!-- ===================== AUDITOR II ===================== -->
+        <section class="card carreira-card" data-role="aud2" hidden>
+            <h2 class="card-title">Auditor II</h2>
+
+            <h3>Descrição do cargo</h3>
+            <p class="card-subtitle">
+                Atuação em auditorias com maior autonomia, planejamento parcial, execução de testes e suporte em
+                recomendações de melhoria.
+            </p>
+
+            <h3>Responsabilidades e Atividades</h3>
+            <ul>
+                <li>Executar testes de auditoria e documentar evidências.</li>
+                <li>Contribuir no planejamento de auditoria (escopo, amostras, cronograma).</li>
+                <li>Identificar riscos e propor recomendações de melhoria.</li>
+                <li>Apoiar na elaboração de relatórios e apresentações dos achados.</li>
+            </ul>
+
+            <h3>Qualificações e Requisitos</h3>
+            <ul>
+                <li>Formação em áreas correlatas (Contabilidade/Adm/Economia).</li>
+                <li>Experiência em auditoria interna/externa ou controles.</li>
+                <li>Capacidade analítica e boa comunicação.</li>
+                <li>Conhecimento intermediário de Excel; desejável conhecimento em mapeamento de processos.</li>
+            </ul>
+        </section>
+
+        <!-- ===================== AUDITOR III ===================== -->
+        <section class="card carreira-card" data-role="aud3" hidden>
+            <h2 class="card-title">Auditor III</h2>
+
+            <h3>Descrição do cargo</h3>
+            <p class="card-subtitle">
+                Condução de auditorias com alta autonomia, visão de risco, liderança técnica e participação ativa em
+                definição de planos de ação e governança.
+            </p>
+
+            <h3>Responsabilidades e Atividades</h3>
+            <ul>
+                <li>Planejar e conduzir auditorias end-to-end (quando aplicável).</li>
+                <li>Realizar análise de riscos e avaliação de controles internos.</li>
+                <li>Elaborar recomendações estratégicas e acompanhar planos de ação.</li>
+                <li>Orientar auditor(es) menos experientes e garantir qualidade técnica.</li>
+            </ul>
+
+            <h3>Qualificações e Requisitos</h3>
+            <ul>
+                <li>Formação em áreas correlatas; desejável especializações.</li>
+                <li>Experiência sólida em auditoria e gestão de riscos.</li>
+                <li>Capacidade de liderança técnica e visão de negócio.</li>
+                <li>Desejável vivência com frameworks de controles e compliance.</li>
+            </ul>
+        </section>
+
+        <!-- CARD COM LINK PARA CANDIDATURA -->
+        <section class="card carreira-cta">
+            <h2 class="card-title">Pronto para se candidatar?</h2>
+            <p class="card-subtitle">
+                Clique abaixo para realizar seu cadastro no Banco de Talentos Auditoria.
+            </p>
+
+            <div class="cta-actions">
+                <a href="{% url 'cadastrar' %}" class="btn-primary">Ir para o cadastro</a>
+            </div>
+
+            <footer class="dashboard-footer">
+                <a href="{% url 'home' %}" class="voltar-home">← Voltar para a página inicial</a>
+            </footer>
+        
+        </section>
+
+    </div>
+</div>
+
+<script src="{% static 'js/carreira_tabs.js' %}"></script>
+
+{% endblock %}

@@ -1,0 +1,161 @@
+/* =========================================================
+   CARREIRA PAGE
+   ========================================================= */
+
+.dashboard-body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 24px 16px;
+}
+
+/* Wrapper geral */
+.dashboard-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Header da página */
+.dashboard-header {
+    margin-bottom: 8px;
+}
+
+/* Subtítulo da página */
+.dashboard-subtitle {
+    max-width: 720px;
+}
+
+/* Cards de carreira */
+.dashboard-wrapper > .card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Título do cargo */
+.card-title {
+    margin-bottom: 4px;
+}
+
+/* Subtítulos internos (Descrição, Responsabilidades, etc) */
+.card h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1f2933;
+    margin-top: 12px;
+}
+
+/* Texto explicativo */
+.card p {
+    line-height: 1.6;
+}
+
+/* Listas de responsabilidades / requisitos */
+.card ul {
+    padding-left: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.card ul li {
+    font-size: 0.9rem;
+    color: #374151;
+    line-height: 1.5;
+}
+
+/* CTA final */
+.card:last-of-type {
+    text-align: center;
+}
+
+.card:last-of-type .btn-primary {
+    margin-top: 8px;
+}
+
+/* Footer */
+.form-footer {
+    text-align: center;
+    margin-top: 24px;
+}
+
+.voltar-home {
+    color: #2563eb;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.voltar-home:hover {
+    text-decoration: underline;
+}
+
+.cta-actions {
+    margin-top: 24px;
+    margin-bottom: 0px;
+}
+
+/* Tabs / retângulos de carreira */
+.carreira-tabs {
+    display: flex;
+    justify-content: center;   /* centraliza horizontalmente */
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;           /* quebra linha no mobile */
+    margin: 20px auto 24px;    /* espaço vertical + centralização */
+}
+
+.carreira-tab{
+  background: #004c6c;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 18px;
+  font-weight: 600;
+  letter-spacing: .2px;
+  cursor: pointer;
+  transition: transform .12s ease, background-color .12s ease, box-shadow .12s ease;
+}
+
+.carreira-tab:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.10);
+  background: #003b54;
+}
+
+.carreira-tab.is-active{
+  background: #00aeef;
+  color: #003244;
+}
+
+/* Cards alternados */
+.carreira-card[hidden]{
+  display: none;
+}
+
+/* Cards de carreira com largura fixa */
+.carreira-card {
+    width: 100%;
+    max-width: 1000px; /* ajustar a largura aqui */
+    margin: 0 auto;    /* centraliza */
+}
+
+
+/* =========================================================
+   RESPONSIVO
+   ========================================================= */
+
+@media (min-width: 768px) {
+    .dashboard-wrapper {
+        gap: 24px;
+    }
+
+    .dashboard-wrapper > .card {
+        padding: 24px 22px;
+    }
+
+    .card h3 {
+        font-size: 1rem;
+    }
+}

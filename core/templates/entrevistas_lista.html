@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Entrevistas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/gestor_dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'css/alerta.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-body">
+    <div class="dashboard-wrapper">
+
+        <header class="dashboard-header">
+            <div>
+                <h1 class="dashboard-title">Entrevistas</h1>
+                <p class="dashboard-subtitle">
+                    Candidatos selecionados para entrevista.
+                </p>
+            </div>
+        </header>
+
+        {% if messages %}
+            <div id="mensagens-container" class="alert-sucesso alert-floating">
+                {% for message in messages %}
+                    <img
+                        src="{% static 'img/checked.png' %}"
+                        alt="Sucesso"
+                        class="icone-sucesso"
+                    />
+                    <span>{{ message }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <section class="card">
+            <h2 class="card-title">Lista</h2>
+
+            {% if candidatos %}
+                <div class="table-wrapper">
+                    <table class="data-table">
+
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Área</th>
+                                <th>Entrevista</th>
+                                <th>Decisão final</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for c in candidatos %}
+                                <tr>
+                                    <td>{{ c.id }}</td>
+                                    <td>{{ c.nome }}</td>
+                                    <td>{{ c.email }}</td>
+                                    <td>{{ c.get_area_display }}</td>
+
+                                    <!-- ENTREVISTA -->
+                                    <td>
+                                        {% if c.entrevista and c.entrevista.entrevistado %}
+                                            <span class="badge badge-ok">
+                                                Já foi entrevistado
+                                            </span>
+                                        {% else %}
+                                            <span class="badge badge-muted">
+                                                Não foi entrevistado
+                                            </span>
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- DECISÃO FINAL -->
+                                    <td>
+                                        {% if c.entrevista %}
+                                            {% if c.entrevista.decisao == 'APROVADO' %}
+                                                <span class="badge badge-success">Aprovado</span>
+                                            {% elif c.entrevista.decisao == 'REPROVADO' %}
+                                                <span class="badge badge-danger">Reprovado</span>
+                                            {% elif c.entrevista.decisao == 'NAO_COMPARECEU' %}
+                                                <span class="badge badge-danger">Não compareceu</span>
+                                            {% else %}
+                                                <span class="badge badge-muted">Em andamento</span>
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="badge badge-muted">Em andamento</span>
+                                        {% endif %}
+                                    </td>
+
+                                    <!-- AÇÃO -->
+                                    <td>
+                                        <div class="acao-group">
+                                            <a class="btn-link" href="{% url 'entrevista-detalhe' c.id %}">
+                                                {% if c.entrevista and c.entrevista.entrevistado %}
+                                                    Rever entrevista
+                                                {% else %}
+                                                    Entrevistar
+                                                {% endif %}
+                                            </a>
+
+                                            <button
+                                                type="button"
+                                                class="btn-link-danger"
+                                                onclick="abrirModalExcluirEntrevista('{{ c.id }}', '{{ c.nome|escapejs }}')"
+                                            >
+                                                Excluir
+                                            </button>
+                                        </div>
+                                    </td>
+
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+                </div>
+
+                <!-- PAGINATOR -->
+                {% if candidatos.has_other_pages %}
+                    <div class="pagination">
+                        {% if candidatos.has_previous %}
+                            <a class="pagination-link" href="?page={{ candidatos.previous_page_number }}">
+                                ← Anterior
+                            </a>
+                        {% endif %}
+
+                        <span class="pagination-info">
+                            Página {{ candidatos.number }} de {{ candidatos.paginator.num_pages }}
+                        </span>
+
+                        {% if candidatos.has_next %}
+                            <a class="pagination-link" href="?page={{ candidatos.next_page_number }}">
+                                Próxima →
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+            {% else %}
+                <p class="sem-resultados">
+                    Não há candidatos com status “Selecionado para entrevista”.
+                </p>
+            {% endif %}
+        </section>
+
+        <!-- MODAL DE CONFIRMAÇÃO DE EXCLUSÃO (ENTREVISTA) -->
+        <div id="modal-excluir-entrevista" class="modal-overlay hidden">
+            <div class="modal-box">
+                <h2 class="modal-title">Confirmar exclusão</h2>
+
+                <p class="modal-text" id="modal-texto-entrevista"></p>
+
+                <form method="post" id="form-excluir-entrevista">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+
+                    <div class="modal-actions">
+                        <button type="submit" class="btn-link-danger">
+                            Sim, excluir
+                        </button>
+
+                        <button type="button" class="btn-secondary" onclick="fecharModalExcluirEntrevista()">
+                            Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <footer class="dashboard-footer">
+            <a href="{% url 'gestor-dashboard' %}" class="voltar-home">
+                ← Voltar ao painel
+            </a>
+        </footer>
+
+    </div>
+</div>
+
+<script src="{% static 'js/modal_excluir_entrevista.js' %}"></script>
+<script src="{% static 'js/alerta.js' %}"></script>
+
+{% endblock %}

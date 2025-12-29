@@ -1,0 +1,155 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+
+    <!-- HEAD -->
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title>{% block title %}Banco de Talentos Auditoria{% endblock %}</title>
+
+        <!-- Fonte Montserrat -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+        <!-- CSS Base -->
+        <link rel="stylesheet" href="{% static 'css/base.css' %}">
+        {% block extra_css %}{% endblock %}
+    </head>
+
+    <!-- BODY -->
+    <body class="base-body {% block body_class %}{% endblock %}">
+
+        <!-- Header com logo + Links do gestor -->
+        <header class="base-header">
+            <div class="base-header-content">
+
+                <a href="{% url 'home' %}" class="base-logo-link">
+                    <img src="{% static 'img/logo.png' %}" alt="Logo da empresa" class="base-logo">
+                </a>
+
+                <nav class="base-header-nav">
+
+                    {% if request.session.gestor_autenticado %}
+
+                        <span class="base-header-link base-header-link--authenticated">
+                            <img
+                                src="{% static 'img/unlock.png' %}"
+                                alt="Gestor autenticado"
+                                class="base-header-icon"
+                            >
+                            Você está autenticado
+                        </span>
+
+                        <a href="{% url 'gestor-dashboard' %}" class="base-header-link">
+                            <img
+                                src="{% static 'img/statisctics.png' %}"
+                                alt="Gestor autenticado"
+                                class="base-header-icon"
+                            >
+                            Painel do gestor
+                        </a>
+
+                        <a href="{% url 'gestor-logout' %}" class="base-header-link">
+                            <img src="{% static 'img/logout.png' %}" class="base-header-icon">
+                            Sair
+                        </a>
+
+                    {% else %}
+                        <a
+                            href="#"
+                            class="base-header-link"
+                            onclick="abrirLoginModal(); return false;"
+                        >
+                            <img
+                                src="{% static 'img/lock.png' %}"
+                                alt="Acesso restrito"
+                                class="base-header-icon"
+                            >
+                            Área do gestor
+                        </a>
+                    {% endif %}
+
+                </nav>
+            </div>
+        </header>
+
+        <!-- Bloco de conteúdo -->
+        <main class="base-content">
+            {% block content %}{% endblock %}
+        </main>
+
+        <!-- Footer com logo -->
+        <footer class="base-footer">
+            <div class="base-footer-content">
+                <a href="{% url 'home' %}">
+                    <img src="{% static 'img/logo.png' %}" class="base-logo" alt="Logo">
+                </a>
+            </div>
+        </footer>
+
+        <!-- Modal de login do gestor -->
+        <div
+            id="login-modal"
+            class="modal-overlay"
+            hidden
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="login-modal-title"
+        >
+            <div class="modal-box modal-login">
+                <button class="modal-close" onclick="fecharLoginModal()">×</button>
+
+                <header class="form-header">
+                    <h1 class="form-title" id="login-modal-title">Área do Gestor</h1>
+                    <p class="form-subtitle">
+                        Acesse o painel para visualizar e gerenciar as candidaturas.
+                    </p>
+                </header>
+
+                {% if request.GET.login_error %}
+                    <div class="login-error">
+                        Usuário ou senha inválidos.
+                    </div>
+                {% endif %}
+
+                <form method="post" action="{% url 'gestor-login' %}" class="login-form">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="modal_username">Usuário</label>
+                        <input id="modal_username" name="username" required placeholder="Insira seu username de gestor">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="modal_password">Senha</label>
+                        <input type="password" id="modal_password" name="password" required placeholder="Insira sua senha">
+                    </div>
+
+                    <button class="btn-primary" type="submit">Entrar</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Import de javascript -->
+        <script src="{% static 'js/modal_login_gestor.js' %}"></script>
+        <script src="{% static 'js/modal_excluir.js' %}"></script>
+
+        <script>
+            window.addEventListener('load', () => {
+                const url = new URL(window.location.href);
+                if (url.searchParams.get('login_error') === '1') {
+                    abrirLoginModal();
+
+                    // remove login_error da URL sem recarregar
+                    url.searchParams.delete('login_error');
+                    window.history.replaceState({}, '', url.toString());
+                }
+            });
+        </script>
+
+    </body>
+
+</html>

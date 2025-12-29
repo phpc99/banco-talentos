@@ -1,160 +1,131 @@
-<!DOCTYPE html>
-<html lang="pt-br">
+{% extends "base.html" %}
+{% load static %}
 
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>{% block title %}Cadastro{% endblock %}</title>
+{% block title %}Cadastro{% endblock %}
 
-        {% load static %}
-        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-    </head>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/cadastrar.css' %}">
+{% endblock %}
 
-    <body class="cadastro-body">
+{% block content %}
 
-        <div class="form-wrapper">
-            <header class="form-header">
-                <h1 class="form-title">Cadastro de Candidato</h1>
-                <p class="form-subtitle">
-                    Preencha seus dados para participar do Banco de Talentos Auditoria.
-                </p>
-            </header>
+<div class="cadastro-body">
 
-            <form method="post" enctype="multipart/form-data" class="cadastro-form">
-                {% csrf_token %}
+    <div class="form-wrapper">
 
-                <!-- Nome -->
-                <div class="form-group">
-                    <label for="id_nome">Nome completo:</label>
-                    <input type="text" id="id_nome" name="nome" required>
-                </div>
+        <header class="form-header">
+            <h1 class="form-title">Cadastro de Candidato</h1>
+            <p class="form-subtitle">
+                Preencha seus dados para participar do Banco de Talentos Auditoria.
+            </p>
+        </header>
 
-                <!-- Estado (oriundos da JS file) -->
-                <div class="form-group">
-                    <label for="id_estado">Estado:</label>
-                    <select id="id_estado" name="estado" required>
-                        <option value="">Selecione um estado</option>
-                    </select>
-                </div>
+        {% if erro %}
+            <div class="login-error">
+                {{ erro }}
+            </div>
+        {% endif %}
 
-                <!-- Cidade (tambem do JS) -->
-                <div class="form-group">
-                    <label for="id_cidade">Cidade:</label>
-                    <select id="id_cidade" name="cidade" required>
-                        <option value="">Selecione um estado primeiro</option>
-                    </select>
-                </div>
+        <form method="post" enctype="multipart/form-data" class="cadastro-form">
+            {% csrf_token %}
 
-                <!-- Formação acadêmica -->
-                <div class="form-group">
-                    <label for="id_formacao">Formação acadêmica:</label>
-                    <select id="id_formacao" name="formacao" required>
-                        <option value="">Selecione</option>
-                        <option value="LIC">Licenciatura</option>
-                        <option value="MES">Mestrado</option>
-                        <option value="DOUT">Doutorado</option>
-                    </select>
-                </div>
+            <!-- Nome -->
+            <div class="form-group">
+                <label for="id_nome">Nome completo</label>
+                <input type="text" id="id_nome" name="nome" required placeholder="Insira seu nome completo">
+            </div>
 
-                <!-- Área a que se candidata -->
-                <div class="form-group">
-                    <label for="id_area">Área a que se candidata:</label>
-                    <select id="id_area" name="area" required>
-                        <option value="">Selecione</option>
-                        <option value="CONT_I">Contador I</option>
-                        <option value="CONT_II">Contador II</option>
-                        <option value="CONT_III">Contador III</option>
-                        <option value="AUD_I">Auditor I</option>
-                        <option value="AUD_II">Auditor II</option>
-                        <option value="AUD_III">Auditor III</option>
-                    </select>
-                </div>
+            <!-- Email -->
+            <div class="form-group">
+                <label for="id_email">Email</label>
+                <input type="email" id="id_email" name="email" required placeholder="Insira seu email">
+            </div>
 
-                <!-- Currículo (só PDF) -->
-                <div class="form-group">
-                    <label for="id_curriculo">Currículo (PDF):</label>
-                    <input type="file" id="id_curriculo" name="curriculo" accept="application/pdf">
-                </div>
+            <!-- Estado -->
+            <div class="form-group">
+                <label for="id_estado">Estado</label>
+                <select id="id_estado" name="estado" required>
+                    <option value="">Selecione um estado</option>
+                </select>
+            </div>
 
-                <!-- Foto profissional (imagem) -->
-                <div class="form-group">
-                    <label for="id_foto">Foto profissional:</label>
-                    <input type="file" id="id_foto" name="foto" accept="image/*">
-                </div>
+            <!-- Cidade -->
+            <div class="form-group">
+                <label for="id_cidade">Cidade</label>
+                <select id="id_cidade" name="cidade" required>
+                    <option value="">Selecione um estado primeiro</option>
+                </select>
+            </div>
 
-                <button type="submit" class="btn-enviar">Enviar cadastro</button>
-            </form>
+            <!-- Formação -->
+            <div class="form-group">
+                <label for="id_formacao">Formação acadêmica</label>
+                <select id="id_formacao" name="formacao" required>
+                    <option value="">Selecione</option>
+                    <option value="LIC">Licenciatura</option>
+                    <option value="MES">Mestrado</option>
+                    <option value="DOUT">Doutorado</option>
+                </select>
+            </div>
 
-            <footer class="form-footer">
-                <a href="{% url 'home' %}" class="voltar-home">← Voltar para a página inicial</a>
-            </footer>
-            
+            <!-- Área -->
+            <div class="form-group">
+                <label for="id_area">Área a que se candidata</label>
+                <select id="id_area" name="area" required>
+                    <option value="">Selecione</option>
+                    <option value="CONT_I">Contador I</option>
+                    <option value="CONT_II">Contador II</option>
+                    <option value="CONT_III">Contador III</option>
+                    <option value="AUD_I">Auditor I</option>
+                    <option value="AUD_II">Auditor II</option>
+                    <option value="AUD_III">Auditor III</option>
+                </select>
+            </div>
+
+            <!-- Currículo -->
+            <div class="form-group">
+                <label for="id_curriculo">Currículo (PDF)</label>
+                <input type="file" id="id_curriculo" name="curriculo" accept="application/pdf">
+            </div>
+
+            <!-- Foto -->
+            <div class="form-group">
+                <label for="id_foto">Foto profissional</label>
+                <input type="file" id="id_foto" name="foto" accept="image/*">
+            </div>
+
+            <button type="submit" class="btn-primary">
+                Enviar cadastro
+            </button>
+        </form>
+
+        <footer class="form-footer">
+            <a href="{% url 'home' %}" class="voltar-home">
+                ← Voltar para a página inicial
+            </a>
+        </footer>
+
+    </div>
+
+</div>
+
+<!-- Modal de sucesso -->
+{% if sucesso %}
+<div class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-content">
+            <h2>Cadastro realizado com sucesso!</h2>
+            <p>Seus dados foram enviados para o Banco de Talentos.</p><br>
+
+            <a href="/" class="btn-primary">
+                Voltar para a página inicial
+            </a>
         </div>
+    </div>
+</div>
+{% endif %}
 
+<script src="{% static 'js/estados_cidades.js' %}"></script>
+<script src="{% static 'js/cadastro_localidade.js' %}"></script>
 
-
-
-        <!------------- ESTADOS E CIDADES ------------->
-
-        <script src="{% static 'js/estados_cidades.js' %}"></script>
-
-        <script>
-            // cada item tem formato { nome: "cidade", uf: "sigla estado" }
-
-            const selectEstado = document.getElementById('id_estado');
-            const selectCidade = document.getElementById('id_cidade');
-
-            function carregarEstados() {
-                // pega apenas as siglas únicas dos estados
-                const ufs = [...new Set(cidades.map(c => c.uf))].sort();
-
-                // limpa e coloca a opção padrão
-                selectEstado.innerHTML = '<option value="">Selecione um estado</option>';
-
-                ufs.forEach(uf => {
-                    const option = document.createElement('option');
-                    option.value = uf;        // valor que será enviado pro backend
-                    option.textContent = uf;  // texto exibido
-                    selectEstado.appendChild(option);
-                });
-            }
-
-            function carregarCidades(uf) {
-                // limpa e coloca opção padrão
-                selectCidade.innerHTML = '<option value="">Selecione uma cidade</option>';
-
-                // filtra cidades pelo estado escolhido
-                const cidadesFiltradas = cidades.filter(c => c.uf === uf);
-
-                cidadesFiltradas.forEach(cidade => {
-                    const option = document.createElement('option');
-                    option.value = cidade.nome;       // valor enviado pro backend
-                    option.textContent = cidade.nome; // texto exibido
-                    selectCidade.appendChild(option);
-                });
-            }
-
-            // quando o usuário muda o estado
-            selectEstado.addEventListener('change', function () {
-                const ufSelecionada = this.value;
-
-                if (ufSelecionada) {
-                    carregarCidades(ufSelecionada);
-                    selectCidade.disabled = false;
-                } else {
-                    selectCidade.innerHTML = '<option value="">Selecione um estado primeiro</option>';
-                    selectCidade.disabled = true;
-                }
-            });
-
-            // inicialização
-            carregarEstados();
-            selectCidade.disabled = true;
-        </script>
-
-    </body>
-
-</html>
+{% endblock %}

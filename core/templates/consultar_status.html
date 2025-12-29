@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Consultar status{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/consultar_status.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="cadastro-body">
+    
+    <div class="form-wrapper">
+
+        <header class="form-header">
+            <h1 class="form-title">Consultar status da candidatura</h1>
+            <p class="form-subtitle">
+                Informe o email utilizado no cadastro.
+            </p>
+        </header>
+
+        <!-- FORMULÁRIO -->
+        <form method="post" class="cadastro-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="id_email">Email</label>
+                <input
+                    type="email"
+                    id="id_email"
+                    name="email"
+                    required
+                    value="{{ request.POST.email }}"
+                    placeholder="Insira o email"
+                >
+            </div>
+
+            <button type="submit" class="btn-primary">
+                Consultar
+            </button>
+        </form>
+
+        <!-- ERRO -->
+        {% if erro %}
+            <div class="login-error" style="margin-top: 16px;">
+                {{ erro }}
+            </div>
+        {% endif %}
+
+        <!-- RESULTADO -->
+        {% if candidato %}
+            <div class="status-card">
+
+                <div class="status-card-header">
+                    <h2>Status da candidatura</h2>
+                </div>
+
+                <div class="status-card-body">
+                    <div class="status-info">
+                        <span class="status-label">Nome</span>
+                        <span class="status-value">{{ candidato.nome }}</span>
+                    </div>
+
+                    <div class="status-info">
+                        <span class="status-label">Email</span>
+                        <span class="status-value">{{ candidato.email }}</span>
+                    </div>
+
+                    <div class="status-info">
+                        <span class="status-label">Localização</span>
+                        <span class="status-value">
+                            {{ candidato.cidade }} / {{ candidato.estado }}
+                        </span>
+                    </div>
+
+                    <div class="status-info">
+                        <span class="status-label">Área pretendida</span>
+                        <span class="status-value">
+                            {{ candidato.get_area_display }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="status-card-footer">
+                    <span class="status-footer-label">Status atual</span>
+                    
+                    {% if candidato.status == "CADASTRADO" %}
+                        <span class="badge badge-info">
+                            {{ candidato.get_status_display }}
+                        </span>
+
+                    {% elif candidato.status == "SELECIONADO" %}
+                        <span class="badge badge-info">
+                            {{ candidato.get_status_display }}
+                        </span>
+
+                    {% elif candidato.status == "APROVADO" %}
+                        <span class="badge badge-success">
+                            {{ candidato.get_status_display }}
+                        </span>
+
+                    {% elif candidato.status == "REPROVADO" %}
+                        <span class="badge badge-danger">
+                            {{ candidato.get_status_display }}
+                        </span>
+
+                    {% elif candidato.status == "NAO_COMPARECEU" %}
+                        <span class="badge badge-danger">
+                            {{ candidato.get_status_display }}
+                        </span>
+
+                    {% else %}
+                        <span class="badge badge-muted">
+                            {{ candidato.get_status_display }}
+                        </span>
+                    {% endif %}
+
+                </div>
+
+            </div>
+        {% endif %}
+
+        <footer class="dashboard-footer">
+            <a href="{% url 'home' %}" class="voltar-home">
+                ← Voltar para a página inicial
+            </a>
+        </footer>
+
+    </div>
+</div>
+
+{% endblock %}

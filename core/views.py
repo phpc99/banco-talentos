@@ -2,39 +2,56 @@ import json
 from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 from .forms import CandidatoForm
-from .models import Candidato
+from .models import Candidato, EntrevistaAvaliacao
 from django.db.models import Count
 from django.contrib import messages
 from django.core.paginator import Paginator
-
-# Create your views here.
-
-
-
+from django.urls import reverse
+from django.utils.http import urlencode
+from urllib.parse import urlparse
 
 # ---------------------- HOME PAGE ---------------------- #
 
 def home(request):
     return render(request, 'home.html')
 
-
-
-
 # ---------------------- CADASTRO DE CANDIDATO ---------------------- #
 
 def cadastrar(request):
-    if request.method == 'POST':
-        form = CandidatoForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return render(request, 'cadastro_sucesso.html')
-    else:
-        form = CandidatoForm()
+    erro = None
 
-    return render(request, 'cadastrar.html', {'form': form})
+    if request.method == "POST":
+        nome = request.POST.get("nome")
+        email = request.POST.get("email")
+        estado = request.POST.get("estado")
+        cidade = request.POST.get("cidade")
+        formacao = request.POST.get("formacao")
+        area = request.POST.get("area")
+        curriculo = request.FILES.get("curriculo")
+        foto = request.FILES.get("foto")
 
+        # VALIDAÇÃO DE EMAIL DUPLICADO
+        if Candidato.objects.filter(email__iexact=email).exists():
+            erro = "Email já em uso."
+        else:
+            Candidato.objects.create(
+                nome=nome,
+                email=email,
+                estado=estado,
+                cidade=cidade,
+                formacao=formacao,
+                area=area,
+                curriculo=curriculo,
+                foto=foto,
+            )
+            return render(request, 'cadastrar.html', {
+                'sucesso': True
+            })
 
-
+    return render(request, 'cadastrar.html', {
+        "erro": erro,
+        "dados": request.POST
+    })
 
 # ---------------------- LOGIN DE GESTOR ---------------------- #
 
@@ -43,21 +60,36 @@ GESTOR_USERNAME = 'gestor'
 GESTOR_PASSWORD = '1234' 
 
 def gestor_login(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+    if request.method != 'POST':
+        return redirect('home')
 
-        if username == GESTOR_USERNAME and password == GESTOR_PASSWORD:
-            request.session['gestor_autenticado'] = True
-            return redirect('gestor-dashboard')
-        else:
-            return render(
-                request,
-                'gestor_login.html',
-                {'erro': 'Credenciais inválidas.'}
-            )
+    username = request.POST.get('username', '')
+    password = request.POST.get('password', '')
 
-    return render(request, 'gestor_login.html')
+    if username == GESTOR_USERNAME and password == GESTOR_PASSWORD:
+        request.session['gestor_autenticado'] = True
+        return redirect('gestor-dashboard')
+
+    # ---------- erro: voltar para a página anterior ----------
+    fallback = reverse('home')
+    referer = request.META.get('HTTP_REFERER', '')
+
+    # Segurança: só aceita retorno para o mesmo host
+    destino = fallback
+    if referer:
+        ref = urlparse(referer)
+        if ref.netloc == request.get_host():
+            destino = ref.path
+            if ref.query:
+                destino += f"?{ref.query}"
+
+    # adiciona login_error=1 preservando query existente
+    if '?' in destino:
+        destino = f"{destino}&{urlencode({'login_error':'1'})}"
+    else:
+        destino = f"{destino}?{urlencode({'login_error':'1'})}"
+
+    return redirect(destino)
 
 def gestor_required(view_func):
     def wrapper(request, *args, **kwargs):
@@ -139,10 +171,10 @@ def gestor_dashboard(request):
         'opcoes_formacoes': Candidato.FORMACOES,
         'opcoes_areas': Candidato.AREAS,
 
-        # dados dos gráficos em JSON
-        'chart_area_json': json.dumps(chart_area),
-        'chart_formacao_json': json.dumps(chart_formacao),
-        'chart_estado_json': json.dumps(chart_estado),
+        # dados dos gráficos
+        'chart_area': chart_area,
+        'chart_formacao': chart_formacao,
+        'chart_estado': chart_estado,
     }
 
     return render(request, 'gestor_dashboard.html', context)
@@ -153,6 +185,7 @@ def excluir_candidato(request, candidato_id):
 
     if request.method == 'POST':
         candidato.delete()
+        messages.success(request, "Candidato excluído com sucesso")
         return redirect('gestor-dashboard')
 
     return render(request, 'confirmar_exclusao.html', {'candidato': candidato})
@@ -162,11 +195,257 @@ def excluir_candidato(request, candidato_id):
 def atualizar_anotacoes(request, candidato_id):
     candidato = get_object_or_404(Candidato, id=candidato_id)
 
-    if request.method == 'POST':
-        texto = request.POST.get('anotacoes', '').strip()
-        candidato.anotacoes = texto
+    if request.method == "POST":
+        anotacoes = request.POST.get("anotacoes", "")
+        candidato.anotacoes = anotacoes
         candidato.save()
-        messages.success(request, "Anotações salvas com sucesso")
-        return redirect('gestor-dashboard')
 
-    return redirect('gestor-dashboard')
+        messages.success(request, "Anotações salvas com sucesso")
+
+        page = request.POST.get("page", "")
+        estado = request.POST.get("estado", "")
+        formacao = request.POST.get("formacao", "")
+        area = request.POST.get("area", "")
+
+        params = {}
+        if page: params["page"] = page
+        if estado: params["estado"] = estado
+        if formacao: params["formacao"] = formacao
+        if area: params["area"] = area
+
+        url = reverse("gestor-dashboard")
+        if params:
+            url += "?" + urlencode(params)
+
+        return redirect(url)
+
+    return redirect("gestor-dashboard")
+
+@gestor_required
+def atualizar_status(request, candidato_id):
+    candidato = get_object_or_404(Candidato, id=candidato_id)
+
+    if request.method == "POST":
+        novo_status = request.POST.get("status")
+
+        if novo_status:
+            candidato.status = novo_status
+            candidato.save()
+            messages.success(request, "Status salvo com sucesso")
+
+        page = request.POST.get("page", "")
+        estado = request.POST.get("estado", "")
+        formacao = request.POST.get("formacao", "")
+        area = request.POST.get("area", "")
+
+        params = {}
+        if page:
+            params["page"] = page
+        if estado:
+            params["estado"] = estado
+        if formacao:
+            params["formacao"] = formacao
+        if area:
+            params["area"] = area
+
+        url = reverse("gestor-dashboard")
+        if params:
+            url += "?" + urlencode(params)
+
+        return redirect(url)
+
+    return redirect("gestor-dashboard")
+
+# Consulta de status pelo usuário (onde ele vai digitar o email)
+def consultar_status(request):
+    candidato = None
+    erro = None
+
+    if request.method == "POST":
+        email = request.POST.get("email", "").strip().lower()
+
+        if not email:
+            erro = "Informe um email."
+        else:
+            candidato = (
+                Candidato.objects
+                .filter(email__iexact=email)
+                .order_by("-data_criacao")
+                .first()
+            )
+
+            if not candidato:
+                erro = "Nenhuma candidatura encontrada para este email."
+
+    return render(
+        request,
+        "consultar_status.html",
+        {
+            "candidato": candidato,
+            "erro": erro
+        }
+    )
+
+# ---------------------- ENTREVISTA ---------------------- #
+
+QUESTIONARIO_COMUM = [
+    "Apresentação e clareza ao se comunicar",
+    "Organização do raciocínio",
+    "Postura profissional",
+    "Conhecimento geral da área",
+    "Capacidade de resolver problemas",
+]
+
+QUESTIONARIO_POR_AREA = {
+    "CONT_I": [
+        "Conhecimento básico de contabilidade",
+        "Noções de conciliação e lançamentos",
+    ],
+    "CONT_II": [
+        "Análise de demonstrações contábeis",
+        "Conhecimento de rotinas fiscais/contábeis",
+    ],
+    "CONT_III": [
+        "Capacidade de liderança técnica em contabilidade",
+        "Experiência com fechamento e auditorias internas",
+    ],
+    "AUD_I": [
+        "Noções básicas de auditoria",
+        "Conhecimento de controles internos",
+    ],
+    "AUD_II": [
+        "Planejamento de auditoria e testes",
+        "Identificação de riscos e recomendações",
+    ],
+    "AUD_III": [
+        "Estratégia de auditoria e visão de risco",
+        "Experiência com auditoria externa/interna avançada",
+    ],
+}
+
+OPCOES_NOTA = [
+    ("RUIM", "Ruim"),
+    ("MEDIO", "Médio"),
+    ("DESEJAVEL", "Desejável"),
+    ("MUITO_BOM", "Muito bom"),
+]
+
+# ----- Páginas do gestor -----
+
+@gestor_required
+def entrevistas_lista(request):
+    candidatos_qs = (
+        Candidato.objects
+        .filter(status=Candidato.STATUS_ENTREVISTA)
+        .select_related("entrevista")
+        .order_by("id")
+    )
+
+    paginator = Paginator(candidatos_qs, 10)
+    page_number = request.GET.get("page")
+    candidatos = paginator.get_page(page_number)
+
+    return render(
+        request,
+        "entrevistas_lista.html",
+        {
+            "candidatos": candidatos
+        }
+    )
+
+@gestor_required
+def entrevista_detalhe(request, candidato_id):
+    candidato = get_object_or_404(Candidato, id=candidato_id)
+
+    # Segurança extra: só permitir entrevistar quem está no status correto
+    if candidato.status != Candidato.STATUS_ENTREVISTA:
+        return redirect("entrevistas-lista")
+
+    avaliacao, _ = EntrevistaAvaliacao.objects.get_or_create(candidato=candidato)
+
+    perguntas_comuns = QUESTIONARIO_COMUM
+    perguntas_especificas = QUESTIONARIO_POR_AREA.get(candidato.area, [])
+
+    # --------- PREFILL (carrega o que já foi salvo) ---------
+    respostas_salvas = avaliacao.respostas or {}
+    comuns_salvos = respostas_salvas.get("comum", []) or []
+    especificos_salvos = respostas_salvas.get("especifico", []) or []
+
+    def montar_itens(perguntas, salvos):
+        itens = []
+        for i, pergunta in enumerate(perguntas):
+            nota = ""
+            obs = ""
+            if i < len(salvos) and isinstance(salvos[i], dict):
+                nota = salvos[i].get("nota", "") or ""
+                obs = salvos[i].get("observacao", "") or ""
+            itens.append({"pergunta": pergunta, "nota": nota, "observacao": obs})
+        return itens
+
+    comum_itens = montar_itens(perguntas_comuns, comuns_salvos)
+    especifico_itens = montar_itens(perguntas_especificas, especificos_salvos)
+
+    # --------- POST (salvar) ---------
+    if request.method == "POST":
+        comum = []
+        especifico = []
+
+        for idx, pergunta in enumerate(perguntas_comuns):
+            nota = request.POST.get(f"comum_nota_{idx}", "")
+            obs = request.POST.get(f"comum_obs_{idx}", "").strip()
+            comum.append({"pergunta": pergunta, "nota": nota, "observacao": obs})
+
+        for idx, pergunta in enumerate(perguntas_especificas):
+            nota = request.POST.get(f"esp_nota_{idx}", "")
+            obs = request.POST.get(f"esp_obs_{idx}", "").strip()
+            especifico.append({"pergunta": pergunta, "nota": nota, "observacao": obs})
+
+        avaliacao.respostas = {"comum": comum, "especifico": especifico}
+
+        decisao = request.POST.get("decisao", EntrevistaAvaliacao.DECIDIR_DEPOIS)
+        avaliacao.decisao = decisao
+
+        avaliacao.entrevistado = True
+        avaliacao.save()
+
+        messages.success(request, "Avaliação salva com sucesso")
+
+        return redirect("entrevistas-lista")
+
+    context = {
+        "candidato": candidato,
+        "avaliacao": avaliacao,
+        "opcoes_nota": OPCOES_NOTA,
+        "decisoes": EntrevistaAvaliacao.DECISAO_CHOICES,
+        "comum_itens": comum_itens,
+        "especifico_itens": especifico_itens,
+    }
+    return render(request, "entrevista_detalhe.html", context)
+
+# ---------------------- CARREIRA PAGE ---------------------- #
+
+def carreira(request):
+    return render(request, 'carreira.html')
+
+def gestor_logout(request):
+    request.session.flush()
+    return redirect('home')
+
+@gestor_required
+def excluir_entrevista(request, candidato_id):
+    candidato = get_object_or_404(Candidato, id=candidato_id)
+
+    if request.method == "POST":
+        # apaga a entrevista (se existir)
+        if hasattr(candidato, "entrevista"):
+            candidato.entrevista.delete()
+
+        # muda o status para sair da lista
+        candidato.status = Candidato.STATUS_SUBMETIDO 
+        candidato.save()
+
+        messages.success(request, "Entrevista excluída com sucesso")
+
+    # volta para a mesma página
+    next_url = request.POST.get("next") or "entrevistas-lista"
+    return redirect(next_url)
