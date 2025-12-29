@@ -60,6 +60,9 @@ Go to: http://127.0.0.1:8000/
 - Public consultation of application status via email
 - Simple and intuitive flow to participate in the Talent Pool
 
+![Candidate registration](screenshots/1-cadastro.png)
+![Application status](screenshots/1-status.png)
+
 ## Application Management (Manager Dashboard)
 
 - Administrative dashboard to view and manage all applications
@@ -111,6 +114,9 @@ Go to: http://127.0.0.1:8000/
 - Cadastro de candidatos com dados pessoais, formação, área pretendida e upload de currículo/foto
 - Consulta pública do status da candidatura via e-mail
 - Fluxo simples e intuitivo para participação no Banco de Talentos
+
+![Registro de candidato](screenshots/1-cadastro.png)
+![Status da candidatura](screenshots/1-status.png)
 
 ## Gestão de Candidaturas (Painel do Gestor)
 
