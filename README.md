@@ -76,6 +76,13 @@ Go to: http://127.0.0.1:8000/
 - Internal notes system per candidate
 - Paginated results for better performance and usability
 
+<p align="center">
+  <img src="screenshots/2-gestor_dashboard_bar.png" width="45%">
+</p>
+
+<p align="center"><em>Manager Dashboard</em></p>
+
+
 ## Data Visualization
 
 - Dynamic charts (bar and pie) to analyze candidates by: Area, Education, and State
@@ -126,7 +133,7 @@ Go to: http://127.0.0.1:8000/
 
 <p align="center"><em>Registro de candidato e Status da candidatura</em></p>
 
-## Gestão de Candidaturas (Painel do Gestor)
+## Gestão de Candidaturas
 
 - Painel administrativo para visualização e gestão de todas as candidaturas
 - Filtros por estado, formação e área
@@ -134,6 +141,12 @@ Go to: http://127.0.0.1:8000/
 - Exclusão de candidaturas com confirmação via modal
 - Sistema de anotações internas por candidato
 - Paginação de resultados para melhor desempenho e usabilidade
+
+<p align="center">
+  <img src="screenshots/2-gestor_dashboard_bar.png" width="45%">
+</p>
+
+<p align="center"><em>Painel do Gestor</em></p>
 
 ## Visualização de Dados
 
