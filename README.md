@@ -90,10 +90,10 @@ Go to: http://127.0.0.1:8000/
 - Responsive layout consistent with the administrative dashboard
 
 <p align="center">
-  <img src="screenshots/3-gestor_dashboard_bar.png" width="45%">
+  <img src="screenshots/3-gestor_dashboard_bar.png" width="90%">
 </p>
 <p align="center">
-  <img src="screenshots/3-gestor_dashboard_pie.png" width="45%">
+  <img src="screenshots/3-gestor_dashboard_pie.png" width="90%">
 </p>
 
 <p align="center"><em>Dynamic charts (bar and pie)</em></p>
@@ -164,10 +164,10 @@ Go to: http://127.0.0.1:8000/
 - Layout responsivo e consistente com o painel administrativo
 
 <p align="center">
-  <img src="screenshots/3-gestor_dashboard_bar.png" width="45%">
+  <img src="screenshots/3-gestor_dashboard_bar.png" width="90%">
 </p>
 <p align="center">
-  <img src="screenshots/3-gestor_dashboard_pie.png" width="45%">
+  <img src="screenshots/3-gestor_dashboard_pie.png" width="90%">
 </p>
 
 <p align="center"><em>Gráficos dinâmicos (barras e pizza)</em></p>
