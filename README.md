@@ -124,6 +124,15 @@ Go to: http://127.0.0.1:8000/
 - Call-to-action (CTA) for Talent Pool registration
 - Home page with hero section and embedded institutional video
 
+<p align="center">
+  <img src="screenshots/5-home_page.png" width="90%">
+</p>
+<p align="center">
+  <img src="screenshots/5-carreira.png" width="90%">
+</p>
+
+<p align="center"><em>Home page and Careers page</em></p>
+
 ## UI / UX
 
 - Consistent design across public and administrative pages
@@ -206,6 +215,15 @@ Go to: http://127.0.0.1:8000/
 - Navegação por tabs entre carreiras
 - CTA para cadastro no Banco de Talentos
 - Home page com seção hero e vídeo institucional incorporado
+
+<p align="center">
+  <img src="screenshots/5-home_page.png" width="90%">
+</p>
+<p align="center">
+  <img src="screenshots/5-carreira.png" width="90%">
+</p>
+
+<p align="center"><em>Home page e Página de Carreiras</em></p>
 
 ## UI / UX
 
