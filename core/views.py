@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.http import HttpResponse
 from .forms import CandidatoForm
 from .models import Candidato, EntrevistaAvaliacao
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.urls import reverse
@@ -334,31 +334,21 @@ OPCOES_NOTA = [
 
 @gestor_required
 def entrevistas_lista(request):
-    candidatos_qs = (
-        Candidato.objects
-        .filter(status=Candidato.STATUS_ENTREVISTA)
-        .select_related("entrevista")
-        .order_by("id")
-    )
+    candidatos_qs = Candidato.objects.filter(
+        Q(status=Candidato.STATUS_ENTREVISTA) | Q(entrevista__isnull=False)
+    ).distinct().order_by("id")
 
     paginator = Paginator(candidatos_qs, 10)
     page_number = request.GET.get("page")
     candidatos = paginator.get_page(page_number)
 
-    return render(
-        request,
-        "entrevistas_lista.html",
-        {
-            "candidatos": candidatos
-        }
-    )
+    return render(request, "entrevistas_lista.html", {"candidatos": candidatos})
 
 @gestor_required
 def entrevista_detalhe(request, candidato_id):
     candidato = get_object_or_404(Candidato, id=candidato_id)
 
-    # Segurança extra: só permitir entrevistar quem está no status correto
-    if candidato.status != Candidato.STATUS_ENTREVISTA:
+    if candidato.status != Candidato.STATUS_ENTREVISTA and not hasattr(candidato, "entrevista"):
         return redirect("entrevistas-lista")
 
     avaliacao, _ = EntrevistaAvaliacao.objects.get_or_create(candidato=candidato)
@@ -390,26 +380,54 @@ def entrevista_detalhe(request, candidato_id):
         comum = []
         especifico = []
 
+        # Respostas comuns
         for idx, pergunta in enumerate(perguntas_comuns):
             nota = request.POST.get(f"comum_nota_{idx}", "")
             obs = request.POST.get(f"comum_obs_{idx}", "").strip()
-            comum.append({"pergunta": pergunta, "nota": nota, "observacao": obs})
+            comum.append({
+                "pergunta": pergunta,
+                "nota": nota,
+                "observacao": obs
+            })
 
+        # Respostas específicas
         for idx, pergunta in enumerate(perguntas_especificas):
             nota = request.POST.get(f"esp_nota_{idx}", "")
             obs = request.POST.get(f"esp_obs_{idx}", "").strip()
-            especifico.append({"pergunta": pergunta, "nota": nota, "observacao": obs})
+            especifico.append({
+                "pergunta": pergunta,
+                "nota": nota,
+                "observacao": obs
+            })
 
-        avaliacao.respostas = {"comum": comum, "especifico": especifico}
+        # Atualiza avaliação
+        decisao = request.POST.get(
+            "decisao",
+            EntrevistaAvaliacao.DECIDIR_DEPOIS
+        )
 
-        decisao = request.POST.get("decisao", EntrevistaAvaliacao.DECIDIR_DEPOIS)
+        avaliacao.respostas = {
+            "comum": comum,
+            "especifico": especifico
+        }
         avaliacao.decisao = decisao
-
         avaliacao.entrevistado = True
         avaliacao.save()
 
-        messages.success(request, "Avaliação salva com sucesso")
+        # REGRA DE NEGÓCIO CENTRALIZADA
+        if decisao == EntrevistaAvaliacao.APROVADO:
+            candidato.status = Candidato.STATUS_APROVADO
+        elif decisao == EntrevistaAvaliacao.REPROVADO:
+            candidato.status = Candidato.STATUS_REPROVADO
+        elif decisao == EntrevistaAvaliacao.NAO_COMPARECEU:
+            candidato.status = Candidato.STATUS_NAO_COMPARECEU
+        else:
+            # Decidir depois → continua em entrevista
+            candidato.status = Candidato.STATUS_ENTREVISTA
 
+        candidato.save()
+
+        messages.success(request, "Avaliação salva com sucesso")
         return redirect("entrevistas-lista")
 
     context = {
