@@ -108,6 +108,15 @@ Go to: http://127.0.0.1:8000/
 - Interview deletion with confirmation
 - Visual feedback for interview status (“Interview completed”)
 
+<p align="center">
+  <img src="screenshots/4-entrevista_lista.png" width="90%">
+</p>
+<p align="center">
+  <img src="screenshots/4-entrevista_detalhe.png" width="90%">
+</p>
+
+<p align="center"><em></em>List of candidates selected for interview and Interview page</p>
+
 ## Institutional Pages
 
 - Careers page with detailed descriptions for each role
@@ -181,6 +190,15 @@ Go to: http://127.0.0.1:8000/
 - Possibilidade de rever entrevistas já realizadas
 - Exclusão de entrevistas com confirmação
 - Feedback visual de status (“Já foi entrevistado”)
+
+<p align="center">
+  <img src="screenshots/4-entrevista_lista.png" width="90%">
+</p>
+<p align="center">
+  <img src="screenshots/4-entrevista_detalhe.png" width="90%">
+</p>
+
+<p align="center"><em></em>Lista de candidatos selecionados para entrevista e Página de entrevista</p>
 
 ## Páginas Institucionais
 
