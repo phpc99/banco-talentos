@@ -92,7 +92,7 @@ Go to: http://127.0.0.1:8000/
 - Call-to-action (CTA) for Talent Pool registration
 - Home page with hero section and embedded institutional video
 
-UI / UX
+## UI / UX
 
 - Consistent design across public and administrative pages
 - Reusable cards, standardized spacing, and uniform typography
