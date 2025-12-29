@@ -77,7 +77,7 @@ Go to: http://127.0.0.1:8000/
 - Paginated results for better performance and usability
 
 <p align="center">
-  <img src="screenshots/2-gestor_dashboard_bar.png" width="45%">
+  <img src="screenshots/2-gestor_dashboard_bar.png" width="85%">
 </p>
 
 <p align="center"><em>Manager Dashboard</em></p>
@@ -143,7 +143,7 @@ Go to: http://127.0.0.1:8000/
 - Paginação de resultados para melhor desempenho e usabilidade
 
 <p align="center">
-  <img src="screenshots/2-gestor_dashboard_bar.png" width="45%">
+  <img src="screenshots/2-gestor_dashboard_bar.png" width="65%">
 </p>
 
 <p align="center"><em>Painel do Gestor</em></p>
