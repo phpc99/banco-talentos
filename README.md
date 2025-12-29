@@ -63,6 +63,13 @@ Go to: http://127.0.0.1:8000/
 ![Candidate registration](screenshots/1-cadastro.png)
 ![Application status](screenshots/1-status.png)
 
+<p align="center">
+  <img src="screenshots/1-cadastro.png" width="45%">
+  <img src="screenshots/1-status.png" width="45%">
+</p>
+
+<p align="center"><em>Candidate registration and Application status</em></p>
+
 ## Application Management (Manager Dashboard)
 
 - Administrative dashboard to view and manage all applications
