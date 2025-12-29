@@ -89,6 +89,15 @@ Go to: http://127.0.0.1:8000/
 - Chart type switching directly in the interface
 - Responsive layout consistent with the administrative dashboard
 
+<p align="center">
+  <img src="screenshots/3-gestor_dashboard_bar.png" width="45%">
+</p>
+<p align="center">
+  <img src="screenshots/3-gestor_dashboard_pie.png" width="45%">
+</p>
+
+<p align="center"><em>Dynamic charts (bar and pie)</em></p>
+
 ## Interviews
 
 - Dedicated list of candidates selected for interviews
@@ -153,6 +162,15 @@ Go to: http://127.0.0.1:8000/
 - Gráficos dinâmicos (barras e pizza) para análise de candidatos por: Área, Formação, Estado
 - Alternância de tipo de gráfico diretamente na interface
 - Layout responsivo e consistente com o painel administrativo
+
+<p align="center">
+  <img src="screenshots/3-gestor_dashboard_bar.png" width="45%">
+</p>
+<p align="center">
+  <img src="screenshots/3-gestor_dashboard_pie.png" width="45%">
+</p>
+
+<p align="center"><em>Gráficos dinâmicos (barras e pizza)</em></p>
 
 ## Entrevistas
 
