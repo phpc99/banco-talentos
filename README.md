@@ -1,11 +1,11 @@
 # Video
 
-You can watch the video showcasing the project in the following links:
-- [Version 1](https://youtu.be/iBGr6hU_tPM). Also available on branch _version1_;
-- [Version 2](https://youtu.be/fuUXglXD-Ig).
+- You can watch the video showcasing the project in the following links:
+  - [Version 1](https://youtu.be/iBGr6hU_tPM). Also available on branch _version1_;
+  - [Version 2](https://youtu.be/fuUXglXD-Ig).
 
-Report / Relatório: [click](https://github.com/phpc99/banco-talentos/blob/main/report_banco_de_talentos.pdf).
-Presentation / Apresentação: [click](https://github.com/phpc99/banco-talentos/blob/main/apresentacao_banco_de_talentos.pdf).
+- Report / Relatório: [click](https://github.com/phpc99/banco-talentos/blob/main/report_banco_de_talentos.pdf).
+- Presentation / Apresentação: [click](https://github.com/phpc99/banco-talentos/blob/main/apresentacao_banco_de_talentos.pdf).
 
 # How to Run the Project
 
