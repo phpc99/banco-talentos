@@ -1,4 +1,4 @@
-# Video
+# Video and docs
 
 - You can watch the video showcasing the project in the following links:
   - [Version 1](https://youtu.be/iBGr6hU_tPM). Also available on branch _version1_;
