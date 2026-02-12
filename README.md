@@ -1,3 +1,11 @@
+# About
+
+_EN_: The Talent Pool system was developed to centralize and manage the candidate application process within an auditing firm. The platform allows candidates to submit their applications, track application status, and upload documents, while managers access an administrative dashboard for analysis, interviews, and decision-making.
+The solution organizes the entire recruitment workflow—from initial application to final evaluation—providing status control, internal notes, and data visualization through reports and charts, promoting greater efficiency and standardization in the selection process.
+
+_PT_: O sistema Banco de Talentos foi desenvolvido para centralizar e gerenciar o processo de candidaturas em uma empresa de auditoria. A plataforma permite que candidatos realizem seu cadastro, acompanhem o status da candidatura e enviem documentos, enquanto gestores têm acesso a um painel administrativo para análise, entrevistas e tomada de decisão.
+A solução organiza todo o fluxo de recrutamento, desde a inscrição até a avaliação final, oferecendo controle de status, anotações internas e visualização de dados por meio de relatórios e gráficos, promovendo mais eficiência e padronização no processo seletivo.
+
 # Video and docs
 
 - You can watch the video showcasing the project in the following links:
